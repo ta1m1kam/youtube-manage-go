@@ -1,26 +1,23 @@
 package api
 
 import (
-	"context"
 	"github.com/labstack/echo"
 	"github.com/valyala/fasthttp"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
-	"os"
 )
 
 func FetchMostPopularVideos() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		key := os.Getenv("API_KEY")
+		yts := c.Get("yts").(*youtube.Service)
 
-		ctx := context.Background()
-		yts, err := youtube.NewService(ctx, option.WithAPIKey(key))
-		if err != nil {
-			logrus.Fatalf("Error creating new Youtube service: %v", err)
+		call := yts.Videos.List("id, snippet").Chart("mostPopular").MaxResults(3).RegionCode("JP")
+
+		pageToken := c.QueryParam("pageToken")
+		if len(pageToken) > 0 {
+			call = call.PageToken(pageToken)
 		}
 
-		call := yts.Videos.List("id, snippet").Chart("mostPopular").MaxResults(3)
 		res, err := call.Do()
 		if err != nil {
 			logrus.Fatalf("Error calling Youtube API: %v", err)

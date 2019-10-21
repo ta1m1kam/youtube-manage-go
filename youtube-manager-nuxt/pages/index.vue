@@ -6,6 +6,13 @@
           <AppVideo :item="item" :video-id="item.id" />
         </div>
       </div>
+      <div class="block">
+        <nav class="pagination">
+          <a href.prevent="#" class="pagination-next" @click="loadMore">
+            More
+          </a>
+        </nav>
+      </div>
     </div>
   </section>
 </template>
@@ -22,7 +29,19 @@
         return this.$store.getters.getPopularVideos
       },
       nextPageToken() {
-        
+        return this.$store.getters.getMeta.nextPageToken
+      }
+    },
+
+    methods: {
+      loadMore() {
+        const payload = {
+          uri: ROUTES.GET.POPULARS,
+          params: {
+            pageToken: this.nextPageToken
+          }
+        }
+        this.$store.dispatch('fetchPopularVideos', payload)
       }
     },
 
