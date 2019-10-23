@@ -29,6 +29,24 @@
           <p>
             <span>関連動画</span>
           </p>
+          <div v-for="relatedItem in relatedItems">
+            <hr>
+            <nuxt-link :to="`/${relatedItem.id.videoId}`">
+              <article class="media">
+                <div class="media-left">
+                  <figure class="image">
+                    <img :src="relatedItem.snippet.thumbnails.default.url" alt="thumbnail">
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <div class="content">
+                    <p>{{ relatedItem.snippet.title }}</p>
+                    <small>{{ relatedItem.snippet.channelTitle }}</small>
+                  </div>
+                </div>
+              </article>
+            </nuxt-link>
+          </div>
         </div>
       </div>
     </div>
@@ -43,12 +61,20 @@
       item() {
         return this.$store.getters.getVideo
       },
+
+      relatedItems() {
+        return this.$store.getters.getRelatedVideos
+      }
     },
 
     async fetch({store, route}) {
       await store.dispatch('findVideo', {
         uri: ROUTES.GET.VIDEO.replace(':id', route.params.id)
-      })
+      }),
+
+        await store.dispatch('fetchRelatedVideos', {
+          uri: ROUTES.GET.RELATED.replace(':id', route.params.id)
+        })
     }
   }
 </script>
