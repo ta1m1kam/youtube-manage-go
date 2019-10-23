@@ -31,7 +31,7 @@ export  const mutations = {
 
   mutateVideo(state, payload) {
     const params = (payload.items && payload.items.length > 0) ? payload.items[0] : []
-    staga35te.item = params
+    state.item = params
   }
 }
 
