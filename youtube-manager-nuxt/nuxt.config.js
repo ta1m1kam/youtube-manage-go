@@ -29,6 +29,7 @@ export default {
   */
   plugins: [
     '~/plugins/vue-youtube',
+    '~/plugins/cookies-to-state',
   ],
   /*
   ** Nuxt.js modules
@@ -39,6 +40,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    'cookie-universal-nuxt',
+    '@nuxtjs/dotenv',
   ],
   /*
   ** Axios module configuration
