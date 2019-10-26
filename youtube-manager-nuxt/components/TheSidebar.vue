@@ -1,5 +1,5 @@
 <template>
-  <column class="is-2">
+  <div class="column is-2">
     <div class="section">
       <aside class="menu">
         <ul class="menu-list">
@@ -11,5 +11,5 @@
         </ul>
       </aside>
     </div>
-  </column>
+  </div>
 </template>

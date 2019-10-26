@@ -12,12 +12,12 @@
 
 <script>
   import TheHeader from "~/components/TheHeader";
-  import TheSidebar from "~/components/TheSidebar"
+  import TheSidebar from "~/components/TheSidebar";
 
   export default {
     components: {
-      TheHeader,
-      TheSidebar
+      TheHeader: TheHeader,
+      TheSidebar: TheSidebar,
     }
   }
 </script>

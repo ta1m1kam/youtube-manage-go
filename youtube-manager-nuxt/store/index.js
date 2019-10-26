@@ -55,6 +55,7 @@ export const actions = {
     const params = {
       ...res.video_list,
     }
+    params.isFavorite = res.is_favorite || false
     commit('mutateVideo', params)
   },
 
@@ -68,6 +69,12 @@ export const actions = {
     const client = createRequestClient(this.$axios)
     const res = await client.get(payload.uri, payload.params)
     commit('mutateSearchVideos', res)
+  },
+
+  async toggleFavorite({commit}, payload) {
+    const client = createRequestClient(this.$axios)
+    const res = await client.post(payload.uri)
+    commit('mutateToggleFavorite', res.is_favorite)
   }
 }
 
@@ -82,7 +89,8 @@ export  const mutations = {
   },
 
   mutateVideo(state, payload) {
-    const params = (payload.items && payload.items.length > 0) ? payload.items[0] : []
+    const params = (payload.items && payload.items.length > 0) ? payload.items[0] : {}
+    params.isFavorite = payload.isFavorite || false
     state.item = params
   },
 
@@ -93,6 +101,10 @@ export  const mutations = {
   mutateSearchVideos(state, payload) {
     state.searchItems = payload.items ? state.searchItems.concat(payload.items) : []
     state.searchMeta = payload
+  },
+
+  mutateToggleFavorite(state, payload) {
+    state.item.isFavorite = payload
   }
 }
 
