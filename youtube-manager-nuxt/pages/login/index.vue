@@ -45,7 +45,7 @@
           email: this.email,
           password: this.password
         }
-        this.$store.dispatch('login', user)
+        this.$store.dispatch('login/login', user)
       }
     }
   }

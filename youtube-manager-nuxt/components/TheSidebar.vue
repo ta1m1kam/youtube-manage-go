@@ -8,6 +8,11 @@
               ホーム
             </nuxt-link>
           </li>
+          <li>
+            <nuxt-link to="/favorite">
+              お気に入り
+            </nuxt-link>
+          </li>
         </ul>
       </aside>
     </div>

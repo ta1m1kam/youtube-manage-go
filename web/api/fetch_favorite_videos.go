@@ -10,7 +10,7 @@ import (
 	"google.golang.org/api/youtube/v3"
 )
 
-func FetchFavoriteVideos() eho.HandlerFunc {
+func FetchFavoriteVideos() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dbs := c.Get("dbs").(*middlewares.DatabaseClient)
 		token := c.Get("auth").(*auth.Token)

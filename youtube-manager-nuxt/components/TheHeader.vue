@@ -42,13 +42,13 @@
   export default {
     computed: {
       isLoggedIn() {
-        return !!this.$store.getters.isLoggedIn
+        return !!this.$store.getters['login/isLoggedIn']
       }
     },
 
     methods: {
       logout() {
-        this.$store.dispatch('logout')
+        this.$store.dispatch('login/logout')
       }
     }
   }

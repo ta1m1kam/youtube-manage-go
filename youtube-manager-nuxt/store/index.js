@@ -1,5 +1,5 @@
 import {createRequestClient} from '~/store/request-client';
-import firebase from "~/plugins/firebase";
+// import firebase from "~/plugins/firebase";
 
 export const state = () => ({
   items: [],
@@ -8,49 +8,18 @@ export const state = () => ({
   meta: {},
   searchItems: [],
   searchMeta: {},
-  token: '',
+  favoriteItems: [],
 })
 
 export const actions = {
-  async signUp({commit, dispatch}, payload) {
-    await firebase.auth().createUserWithEmailAndPassword(
-      payload.email,
-      payload.password
-    )
-    const res = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-    const token = await res.user.getIdToken()
-    this.$cookies.set('jwt_token', token)
-    commit('mutateToken', token)
-    this.app.router.push('/')
-  },
-
-  async login({commit, dispatch}, payload) {
-    const res = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-    const token = await res.user.getIdToken()
-    this.$cookies.set('jwt_token', token)
-    commit('mutateToken', token)
-    this.app.router.push('/')
-  },
-
-  async logout({commit}) {
-    await firebase.auth().signOut()
-    commit('mutateToken', null)
-    this.$cookies.remove('jwt_token')
-    this.app.router.push('/')
-  },
-
-  async setToken({commit}, payload) {
-    commit('mutateToken', payload)
-  },
-
   async fetchPopularVideos({commit}, payload) {
-    const client = createRequestClient(this.$axios)
+    const client = createRequestClient(this.$axios, this.$cookies, this)
     const res = await client.get(payload.uri, payload.params)
     commit('mutatePopularVideos', res)
   },
 
   async findVideo({commit}, payload) {
-    const client = createRequestClient(this.$axios)
+    const client = createRequestClient(this.$axios, this.$cookies, this)
     const res = await client.get(payload.uri)
     const params = {
       ...res.video_list,
@@ -60,28 +29,32 @@ export const actions = {
   },
 
   async fetchRelatedVideos({commit}, payload) {
-    const client = createRequestClient(this.$axios)
+    const client = createRequestClient(this.$axios, this.$cookies, this)
     const res = await client.get(payload.uri)
     commit('mutateRelatedVideos', res)
   },
 
   async searchVideos({commit}, payload) {
-    const client = createRequestClient(this.$axios)
+    const client = createRequestClient(this.$axios, this.$cookies, this)
     const res = await client.get(payload.uri, payload.params)
     commit('mutateSearchVideos', res)
   },
 
   async toggleFavorite({commit}, payload) {
-    const client = createRequestClient(this.$axios)
+    const client = createRequestClient(this.$axios, this.$cookies, this)
     const res = await client.post(payload.uri)
     commit('mutateToggleFavorite', res.is_favorite)
+  },
+
+  async fetchFavoriteVideos({commit}, payload) {
+    const client = createRequestClient(this.$axios, this.$cookies, this)
+    const res = await client.get(payload.uri)
+    commit('mutateFavoriteVideos', res)
   }
 }
 
-export  const mutations = {
-  mutateToken(state, payload) {
-    state.token = payload
-  },
+export const mutations = {
+
 
   mutatePopularVideos(state, payload) {
     state.items = payload.items ? state.items.concat(payload.items) : []
@@ -105,13 +78,14 @@ export  const mutations = {
 
   mutateToggleFavorite(state, payload) {
     state.item.isFavorite = payload
+  },
+
+  mutateFavoriteVideos(state, payload) {
+    state.favoriteItems = payload.items || []
   }
 }
 
 export const getters = {
-  isLoggedIn(state) {
-    return !!state.token
-  },
   getPopularVideos(state) {
     return state.items
   },
@@ -129,5 +103,8 @@ export const getters = {
   },
   getSearchMeta(state) {
     return state.searchMeta
+  },
+  getFavoriteVideos(state) {
+    return state.favoriteItems
   }
 }

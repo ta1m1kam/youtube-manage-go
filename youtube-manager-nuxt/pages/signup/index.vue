@@ -45,7 +45,7 @@
           password: this.password,
         }
 
-        this.$store.dispatch('signUp', user)
+        this.$store.dispatch('login/signUp', user)
       }
     }
   }
